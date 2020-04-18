@@ -31,4 +31,27 @@ public class InputValidationController {
             return new ResponseEntity("Not safe",HttpStatus.NOT_FOUND);
         }
     }
+
+    @PostMapping(value = "/validateMany", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<Void> validateMany(@RequestBody InputValidationModel[] requestInputValidationModel) throws Exception{
+
+        int isNotSafeCounter = 0;
+
+        if(requestInputValidationModel == null) {
+            return ResponseEntity.noContent().build();
+        }
+
+        for(InputValidationModel singleInput : requestInputValidationModel) {
+            if(!inputValidationService.validateInput(singleInput)) {
+                isNotSafeCounter += 1;
+            }
+        }
+
+        if(isNotSafeCounter == 0) {
+            return new ResponseEntity("Safe", HttpStatus.OK);
+        } else {
+            return new ResponseEntity("Not safe",HttpStatus.NOT_FOUND);
+        }
+
+    }
 }
